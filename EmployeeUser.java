@@ -1,4 +1,4 @@
- public class EmployeeUser {
+ public class EmployeeUser implements Record{
      private String employeeId;
      private String name;
      private String email;
@@ -43,10 +43,23 @@
      public void setPhoneNumber(String phoneNumber) {
          this.phoneNumber = phoneNumber;
      }
+     @Override
      public String lineRepresentation() {
          return employeeId + "," + name + "," + email + "," + address + "," + phoneNumber;
      }
+     @Override
      public String getSearchKey() {
          return employeeId;
+     }
+
+     @Override
+     public String toString() {
+         return "EmployeeUser{" +
+                 "employeeId='" + employeeId + '\'' +
+                 ", name='" + name + '\'' +
+                 ", email='" + email + '\'' +
+                 ", address='" + address + '\'' +
+                 ", phoneNumber='" + phoneNumber + '\'' +
+                 '}';
      }
  }

@@ -5,29 +5,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-abstract class Assist {
-    abstract void  readFromFile();
-    abstract EmployeeUser createRecordFrom(String line);
-    abstract ArrayList<EmployeeUser> returnAllRecords();
-    abstract boolean contains(String key);
-    abstract EmployeeUser getRecord(String key);
-    abstract void insertRecord(EmployeeUser record);
-    abstract void deleteRecord(String key);
-    abstract void SaveToFile();
-}
-public class EmployeeUserDatabase extends Assist {
+public class ProductDatabase {
+    private ArrayList<Product> records=new ArrayList<Product>();
     private String filename;
-    private  ArrayList <EmployeeUser> records=new ArrayList<EmployeeUser>();
-    private EmployeeUser user;
-    public EmployeeUserDatabase(String filename) {
+
+    public ProductDatabase(String filename) {
         this.filename = filename;
         readFromFile();
     }
-    public void  readFromFile()
-    {
+    public void  readFromFile() {
         try {
-            File file = new File( filename );
-            Scanner myReader = new Scanner( file );
+            File myObj = new File(filename);
+            Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
                 records.add(createRecordFrom(data));
@@ -37,25 +26,24 @@ public class EmployeeUserDatabase extends Assist {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
-
     }
-    public EmployeeUser createRecordFrom(String line)
+    public Product createRecordFrom(String line)
     {
         String [] taken=line.split(",");
-        user = new EmployeeUser(taken[0],taken[1],taken[2],taken[3],taken[4]);
+        Product  user = new Product(taken[0], taken[1], taken[2], taken[3], Integer.parseInt(taken[4]), Float.parseFloat(taken[5]));
         return user;
     }
-    public ArrayList<EmployeeUser> returnAllRecords()
+    public ArrayList<Product> returnAllRecords()
     {
         return records;
     }
     public boolean contains(String key)
     {
-        return getRecord(key) != null;
+        return getRecord(key) != null;   //EmployeeUser with id key is found or not;
     }
-    public EmployeeUser getRecord(String key)
+    public Product getRecord(String key)
     {
-        for(EmployeeUser record: records)
+        for(Product record: records)
         {
             if(key.equals(record.getSearchKey()))
             {
@@ -64,16 +52,19 @@ public class EmployeeUserDatabase extends Assist {
         }
         return null; //EmployeeUser with id key is not found
     }
-    public void insertRecord(EmployeeUser record)
+    public void insertRecord(Product record)
     {
-        if(record != null && !contains(record.getSearchKey()))
+        if(record != null&&!contains(record.getSearchKey()))
         {
             records.add(record);
+            System.out.println("record is added successfully");
         }
+        else
+            System.out.println("record might be null or already exists");
     }
     public void deleteRecord(String key)
     {
-        EmployeeUser record = getRecord(key);
+        Product record = getRecord(key);
         if(record != null)
         {
             records.remove(record);
@@ -84,7 +75,7 @@ public class EmployeeUserDatabase extends Assist {
         int recordsCapacity = records.size();
         try( FileWriter file = new FileWriter(filename) )
         {
-            for(EmployeeUser record : records)
+            for(Product record : records)
             {
                 if(records.indexOf(record) == recordsCapacity -1 )
                 {

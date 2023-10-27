@@ -5,21 +5,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-abstract class Assist {
-    abstract void  readFromFile();
-    abstract EmployeeUser createRecordFrom(String line);
-    abstract ArrayList<EmployeeUser> returnAllRecords();
-    abstract boolean contains(String key);
-    abstract EmployeeUser getRecord(String key);
-    abstract void insertRecord(EmployeeUser record);
-    abstract void deleteRecord(String key);
-    abstract void SaveToFile();
-}
-public class EmployeeUserDatabase extends Assist {
+abstract class Database {
     private String filename;
-    private  ArrayList <EmployeeUser> records=new ArrayList<EmployeeUser>();
-    private EmployeeUser user;
-    public EmployeeUserDatabase(String filename) {
+    private ArrayList<Record> records=new ArrayList<Record>();
+    private Record user;
+    public Database(String filename) {
         this.filename = filename;
         readFromFile();
     }
@@ -39,13 +29,8 @@ public class EmployeeUserDatabase extends Assist {
         }
 
     }
-    public EmployeeUser createRecordFrom(String line)
-    {
-        String [] taken=line.split(",");
-        user = new EmployeeUser(taken[0],taken[1],taken[2],taken[3],taken[4]);
-        return user;
-    }
-    public ArrayList<EmployeeUser> returnAllRecords()
+    abstract Record createRecordFrom(String line);
+    public ArrayList<Record> returnAllRecords()
     {
         return records;
     }
@@ -53,9 +38,9 @@ public class EmployeeUserDatabase extends Assist {
     {
         return getRecord(key) != null;
     }
-    public EmployeeUser getRecord(String key)
+    public Record getRecord(String key)
     {
-        for(EmployeeUser record: records)
+        for(Record record: records)
         {
             if(key.equals(record.getSearchKey()))
             {
@@ -64,7 +49,7 @@ public class EmployeeUserDatabase extends Assist {
         }
         return null; //EmployeeUser with id key is not found
     }
-    public void insertRecord(EmployeeUser record)
+    public void insertRecord(Record record)
     {
         if(record != null && !contains(record.getSearchKey()))
         {
@@ -73,7 +58,7 @@ public class EmployeeUserDatabase extends Assist {
     }
     public void deleteRecord(String key)
     {
-        EmployeeUser record = getRecord(key);
+        Record record = getRecord(key);
         if(record != null)
         {
             records.remove(record);
@@ -84,7 +69,7 @@ public class EmployeeUserDatabase extends Assist {
         int recordsCapacity = records.size();
         try( FileWriter file = new FileWriter(filename) )
         {
-            for(EmployeeUser record : records)
+            for(Record record : records)
             {
                 if(records.indexOf(record) == recordsCapacity -1 )
                 {
